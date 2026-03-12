@@ -1,15 +1,16 @@
 *&---------------------------------------------------------------------*
-*& Include          ZINCLUDE_PED_PAI
+*& Include          ZINCLUDE_TC_I01
 *&---------------------------------------------------------------------*
 *&---------------------------------------------------------------------*
 *&      Module  USER_COMMAND_0100  INPUT
 *&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
 MODULE user_command_0100 INPUT.
-  CASE sy-ucomm.
-    "WHEN .
-    WHEN 'BACK' OR 'LEAVE' OR 'EXIT' OR 'CANC'.
+CASE sy-ucomm.
+    WHEN 'BACK' OR 'EXIT' OR 'CANC'.
       LEAVE PROGRAM.
-    WHEN OTHERS.
+    WHEN 'EXPORT'.
+      PERFORM f_export_to_excel.
   ENDCASE.
-
 ENDMODULE.

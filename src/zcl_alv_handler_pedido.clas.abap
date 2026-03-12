@@ -1,56 +1,46 @@
-class ZCL_ALV_HANDLER_PEDIDO definition
-  public
-  inheriting from CL_GUI_ALV_GRID
-  final
-  create public .
+CLASS zcl_alv_handler_pedido DEFINITION PUBLIC FINAL CREATE PUBLIC .
 
-public section.
-
+  PUBLIC SECTION.
 **** Métodos estáticos
-  class-methods GET_INSTANCE
-    returning
-      value(RO_PEDIDO) type ref to ZCL_ALV_HANDLER_PEDIDO .
+    CLASS-METHODS get_instance
+      RETURNING
+        VALUE(ro_pedido) TYPE REF TO zcl_alv_handler_pedido.
+
 **** Métodos
-  methods CONSTRUCTOR .
-  methods INIT_UI .
-  methods DISPLAY .
+    METHODS constructor.
+
+    METHODS:
+      init_ui,  " Criar container e ALV
+      display.  " First display e refresh
+
 **** Eventos
-  methods ON_DATA_CHANGED
-    for event DATA_CHANGED of CL_GUI_ALV_GRID
-    importing
-      !ER_DATA_CHANGED
-      !E_UCOMM .
-  methods ON_DATA_CHANGED_FINISHED
-    for event DATA_CHANGED_FINISHED of CL_GUI_ALV_GRID
-    importing
-      !E_MODIFIED .
-  methods GET_ERROR
-    returning
-      value(RV_ERROR) type ABAP_BOOL .
-protected section.
-private section.
+    METHODS on_data_changed
+      FOR EVENT data_changed OF cl_gui_alv_grid
+      IMPORTING er_data_changed e_ucomm.
 
+    METHODS on_data_changed_finished
+      FOR EVENT data_changed_finished OF cl_gui_alv_grid IMPORTING e_modified.
+
+  PRIVATE SECTION.
 **** Objeto: Instância da classe
-  class-data MO_INSTANCE type ref to ZCL_ALV_HANDLER_PEDIDO .
-**** Objetos
-  data MO_CONTAINER type ref to CL_GUI_CUSTOM_CONTAINER .
-  data MO_GRID type ref to CL_GUI_ALV_GRID .
-  data:
-**** Tabelas
-    gt_pedido    TYPE TABLE OF zstpedido .
-  data GT_FIELDCAT type LVC_T_FCAT .
-  data GT_EXCLUDE type UI_FUNCTIONS .
-**** Estrutura
-  data GS_LAYOUT type LVC_S_LAYO .
-  data GV_ERROR type ABAP_BOOL .
+    CLASS-DATA mo_instance TYPE REF TO zcl_alv_handler_pedido.
 
-  methods SET_ERROR
-    importing
-      !IV_ERROR type ABAP_BOOL .
 **** Métodos
-  methods BUILD_FIELDCAT .
-  methods BUILD_LAYOUT .
-  methods EXCLUDE_TOOLBAR .
+    METHODS: build_fieldcat,
+      build_layout,
+      exclude_toolbar.
+
+**** Objetos
+    DATA mo_container TYPE REF TO cl_gui_custom_container.
+    DATA mo_grid      TYPE REF TO cl_gui_alv_grid.
+
+**** Tabelas
+    DATA gt_pedido    TYPE TABLE OF zstpedido.
+    DATA gt_fieldcat  TYPE lvc_t_fcat.
+    DATA gt_exclude   TYPE ui_functions.
+
+**** Estrutura
+    DATA gs_layout TYPE lvc_s_layo.
 ENDCLASS.
 
 
@@ -59,7 +49,6 @@ CLASS ZCL_ALV_HANDLER_PEDIDO IMPLEMENTATION.
 
 
   METHOD constructor.
-    super->constructor( i_parent = mo_container ).
   ENDMETHOD.
 
 
@@ -107,41 +96,46 @@ CLASS ZCL_ALV_HANDLER_PEDIDO IMPLEMENTATION.
     SET HANDLER me->on_data_changed_finished  FOR mo_grid.
 
     " Registrar evento de edição
-    mo_grid->set_ready_for_input( 1 ).
+    mo_grid->register_edit_event( i_event_id = cl_gui_alv_grid=>mc_evt_modified ).
     mo_grid->register_edit_event( i_event_id = cl_gui_alv_grid=>mc_evt_enter ).
 
-    " Comentado para desabilitar a validação padrão de bstyp
-    " Obs.: Isso desabilita as validações 'automáticas' a cada input
-    "mo_grid->register_edit_event( i_event_id = cl_gui_alv_grid=>mc_evt_modified ).
   ENDMETHOD.
 
 
   METHOD on_data_changed.
 **** Insert Linha
-    LOOP AT er_data_changed->mt_inserted_rows ASSIGNING FIELD-SYMBOL(<fs_row>).
+    DATA lv_value TYPE bstyp.
+    LOOP AT er_data_changed->mt_inserted_rows ASSIGNING FIELD-SYMBOL(<fs_insert>).
+      CLEAR lv_value.
 
-    ENDLOOP.
 
-**** Validar de campos e setar erros
-    LOOP AT er_data_changed->mt_good_cells ASSIGNING FIELD-SYMBOL(<fs_cell>).
-      IF <fs_cell>-fieldname = 'LIFNR' AND <fs_cell>-value IS INITIAL.
-        me->set_error( 'X' ).
 
-        er_data_changed->add_protocol_entry(
-          EXPORTING
-            i_msgid     = 'ZMSG'
-            i_msgno     = '001'
-            i_msgty     = 'E'
-            i_fieldname = 'LIFNR'
-            i_row_id    = <fs_cell>-row_id ).
-      ENDIF.
+
+
+*      er_data_changed->get_cell_value(
+*        EXPORTING
+*          i_row_id    = <fs_insert>-row_id
+*          i_fieldname = 'BSTYP'
+*        IMPORTING
+*          e_value     = lv_value
+*      ).
+*
+*      " Se estiver vazio, define um default no PRÓPRIO buffer de mudanças
+*      IF lv_value IS INITIAL.
+*        er_data_changed->modify_cell(
+*          EXPORTING
+*            i_row_id    = <fs_insert>-row_id
+*            i_fieldname = 'BSTYP'
+*            i_value     = 'F'
+*        ).
+*      ENDIF.
 
     ENDLOOP.
   ENDMETHOD.
 
 
   METHOD on_data_changed_finished.
-    MESSAGE: 'ENTROU FINISHED' TYPE 'S'.
+
   ENDMETHOD.
 
 
@@ -170,7 +164,6 @@ CLASS ZCL_ALV_HANDLER_PEDIDO IMPLEMENTATION.
 
         WHEN 'BSTYP'.
           <fs_fieldcat>-edit      = 'X'.
-          <fs_fieldcat>-no_out     = 'X'.
           <fs_fieldcat>-scrtext_l = 'Categoria Documento'.
           <fs_fieldcat>-scrtext_m = 'Categ Documento'.
           <fs_fieldcat>-scrtext_s = 'Cat Doc'.
@@ -292,15 +285,5 @@ CLASS ZCL_ALV_HANDLER_PEDIDO IMPLEMENTATION.
    ( cl_gui_alv_grid=>mc_fc_sort_dsc )
    ( cl_gui_alv_grid=>mc_fc_info ) ).
 
-  ENDMETHOD.
-
-
-  METHOD get_error.
-    rv_error = gv_error.
-  ENDMETHOD.
-
-
-  METHOD set_error.
-    gv_error = iv_error.
   ENDMETHOD.
 ENDCLASS.

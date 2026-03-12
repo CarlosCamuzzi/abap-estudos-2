@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <PROGDIR>
-    <NAME>ZMPOOL_PEDIDO</NAME>
+    <NAME>ZESTUDO_TC</NAME>
     <SUBC>M</SUBC>
     <RLOAD>P</RLOAD>
     <FIXPT>X</FIXPT>
@@ -12,10 +12,10 @@
    <DYNPROS>
     <item>
      <HEADER>
-      <PROGRAM>ZMPOOL_PEDIDO</PROGRAM>
+      <PROGRAM>ZESTUDO_TC</PROGRAM>
       <SCREEN>0100</SCREEN>
       <LANGUAGE>P</LANGUAGE>
-      <DESCRIPT>ALV Container</DESCRIPT>
+      <DESCRIPT>Table control com Export Excel</DESCRIPT>
       <TYPE>N</TYPE>
       <NEXTSCREEN>0100</NEXTSCREEN>
       <LINES>027</LINES>
@@ -27,13 +27,20 @@
        <NAME>SCREEN</NAME>
       </RPY_DYCATT>
       <RPY_DYCATT>
-       <TYPE>CUST_CTRL</TYPE>
-       <NAME>CONTAINER_ALV_PEDIDO</NAME>
+       <TYPE>TABLE_CTRL</TYPE>
+       <NAME>TC_0100</NAME>
        <ELEMENT_OF>SCREEN</ELEMENT_OF>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>118</LENGTH>
-       <HEIGHT>015</HEIGHT>
+       <LENGTH>071</LENGTH>
+       <HEIGHT>017</HEIGHT>
+       <C_SCROLL_V>X</C_SCROLL_V>
+       <C_SCROLL_H>X</C_SCROLL_H>
+       <TC_TABTYPE>ENTRY</TC_TABTYPE>
+       <TC_HEADER>X</TC_HEADER>
+       <TC_CONFIG>X</TC_CONFIG>
+       <TC_SEL_LNS>SINGLE</TC_SEL_LNS>
+       <TC_SEL_CLS>SINGLE</TC_SEL_CLS>
       </RPY_DYCATT>
      </CONTAINERS>
      <FIELDS>
@@ -58,12 +65,12 @@
     </ADM>
     <STA>
      <RSMPE_STAT>
-      <CODE>STATUS_0100</CODE>
+      <CODE>PF_0100</CODE>
       <MODAL>D</MODAL>
       <ACTCODE>000001</ACTCODE>
       <PFKCODE>000001</PFKCODE>
       <BUTCODE>0001</BUTCODE>
-      <INT_NOTE>STATUS_0100</INT_NOTE>
+      <INT_NOTE>PF_0100</INT_NOTE>
      </RSMPE_STAT>
     </STA>
     <FUN>
@@ -110,15 +117,15 @@
     </PFK>
     <SET>
      <RSMPE_STAF>
-      <STATUS>STATUS_0100</STATUS>
+      <STATUS>PF_0100</STATUS>
       <FUNCTION>BACK</FUNCTION>
      </RSMPE_STAF>
      <RSMPE_STAF>
-      <STATUS>STATUS_0100</STATUS>
+      <STATUS>PF_0100</STATUS>
       <FUNCTION>CANC</FUNCTION>
      </RSMPE_STAF>
      <RSMPE_STAF>
-      <STATUS>STATUS_0100</STATUS>
+      <STATUS>PF_0100</STATUS>
       <FUNCTION>EXIT</FUNCTION>
      </RSMPE_STAF>
     </SET>
@@ -127,34 +134,28 @@
       <OBJ_TYPE>A</OBJ_TYPE>
       <OBJ_CODE>000001</OBJ_CODE>
       <MODAL>D</MODAL>
-      <INT_NOTE>STATUS_0100</INT_NOTE>
+      <INT_NOTE>PF_0100</INT_NOTE>
      </RSMPE_ATRT>
      <RSMPE_ATRT>
       <OBJ_TYPE>P</OBJ_TYPE>
       <OBJ_CODE>000001</OBJ_CODE>
       <MODAL>D</MODAL>
-      <INT_NOTE>STATUS_0100</INT_NOTE>
+      <INT_NOTE>PF_0100</INT_NOTE>
      </RSMPE_ATRT>
      <RSMPE_ATRT>
       <OBJ_TYPE>B</OBJ_TYPE>
       <OBJ_CODE>000001</OBJ_CODE>
       <SUB_CODE>0001</SUB_CODE>
       <MODAL>D</MODAL>
-      <INT_NOTE>STATUS_0100</INT_NOTE>
+      <INT_NOTE>PF_0100</INT_NOTE>
      </RSMPE_ATRT>
     </DOC>
-    <TIT>
-     <RSMPE_TITT>
-      <CODE>TITLE_0100</CODE>
-      <TEXT>Criar Pedido</TEXT>
-     </RSMPE_TITT>
-    </TIT>
    </CUA>
    <TPOOL>
     <item>
      <ID>R</ID>
-     <ENTRY>Include ZMPOOL_PEDIDO</ENTRY>
-     <LENGTH>21</LENGTH>
+     <ENTRY>Programa ZESTUDO_TC</ENTRY>
+     <LENGTH>19</LENGTH>
     </item>
    </TPOOL>
   </asx:values>
